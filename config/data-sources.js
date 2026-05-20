@@ -42,13 +42,21 @@ window.DATA_SOURCES = {
           }
         }
       },
-      'tramo-i':   { label: 'Tramo I',   adapter: 'estandar', url: null },
+      'tramo-i': {
+        label: 'Tramo I',
+        adapter: 'estandar',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ599M1WRyy0A29IEGvluqc14k0jcObel0BP3RQ-z3w8ryr5FjmzSM1YeCoGauHyA/pub?gid=1935831653&single=true&output=csv'
+      },
       'tramo-ii':  {
         label: 'Tramo II',
         adapter: 'estandar',
         url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToUBW-L08hKrlZ-fsOXtQSK29vYgxGJui17azAADydkjCmXlP0v2k7GjP5Sf_2pw/pub?gid=2026999666&single=true&output=csv'
       },
-      'tramo-iii': { label: 'Tramo III', adapter: 'estandar', url: null }
+      'tramo-iii': {
+        label: 'Tramo III',
+        adapter: 'estandar',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT4nPjWU5T9qxIkM29K-d1o_QWTra5GCeI6bVJqZD7Qe6OQUrW4ZGR9MuCTUHucUQ/pub?gid=1261822212&single=true&output=csv'
+      }
     }
   },
   'saltillo-monterrey': {
