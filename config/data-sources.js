@@ -77,7 +77,11 @@ window.DATA_SOURCES = {
           }
         }
       },
-      'segmentos-13-14': { label: 'Segmentos 13 y 14', adapter: 'estandar', url: null }
+      'segmentos-13-14': {
+        label: 'Segmentos 13 y 14',
+        adapter: 'estandar',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCXuNre9SGM6RGnZ5aAco1ztzIpY03LURR32NpE2E6SlHjYtZHmIarlay5mFpkdQ/pub?gid=800038218&single=true&output=csv'
+      }
     }
   },
   'monterrey-nuevo-laredo': {
