@@ -87,7 +87,21 @@ window.DATA_SOURCES = {
   'monterrey-nuevo-laredo': {
     label: 'Monterrey - Nuevo Laredo',
     children: {
-      // pendiente definir submenús
+      'inah': {
+        label: 'INAH',
+        children: {
+          'segmentos-16-17': {
+            label: 'Segmentos 16 y 17',
+            adapter: 'inah',
+            url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSsIQF5xjyL3PRpyahpK4856Z7oKv1Sz-_-M4eITpFCEV5dzwZpxMj51tdYmVJu-A/pub?gid=1831898889&single=true&output=csv'
+          },
+          'segmentos-18-19-20': {
+            label: 'Segmentos 18, 19 y 20',
+            adapter: 'inah',
+            url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNBDAO8oOh3MNNMDXHJv498Un3Lk4r-LK6oKhdctXF8cysucZbm-TvbDdtVJVAWw/pub?gid=1117185999&single=true&output=csv'
+          }
+        }
+      }
     }
   }
 };
