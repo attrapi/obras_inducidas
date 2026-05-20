@@ -102,16 +102,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .project-option.disabled:hover{background:transparent}
 .project-option.has-children .chev{font-size:9px;color:#999;transition:transform 0.15s}
 .project-option.has-children.expanded .chev{transform:rotate(90deg)}
-.project-children{display:none;background:#fafafa;border-left:2px solid #e4ebb8}
+.project-children{display:none;position:absolute;left:100%;top:0;background:#fff;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.15);padding:4px 0;min-width:200px;margin-left:4px;z-index:2001;max-height:70vh;overflow-y:auto}
 .project-children.expanded{display:block}
-.project-children .project-option{padding-left:28px;font-size:11.5px}
-.project-children .project-children .project-option{padding-left:40px;font-size:11px}
+.project-children .project-option{padding-left:16px;font-size:11.5px}
+.project-children .project-children .project-option{padding-left:16px;font-size:11px}
 .project-empty{padding:8px 16px;font-size:10.5px;color:#aaa;font-style:italic;cursor:default}
 .project-load-status{display:none;padding:6px 14px;font-size:11px;color:#fff;background:rgba(0,0,0,0.25);border-radius:14px;margin-left:8px;align-items:center;gap:6px}
 .project-load-status.visible{display:inline-flex}
 .project-load-status .spinner{width:10px;height:10px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .fab{display:none}
+@media (max-width:768px){
+.project-children{position:static;box-shadow:none;margin-left:0;background:#fafafa;border-left:2px solid #e4ebb8;border-radius:0;min-width:0;max-height:none;padding:0}
+.project-children .project-option{padding-left:28px}
+.project-children .project-children .project-option{padding-left:40px}
+}
 @media (max-width:768px){
 .header{padding:10px 12px;flex-wrap:wrap;gap:8px;align-items:flex-start}
 .header h1{font-size:15px!important}
@@ -729,11 +734,33 @@ function buildProjectMenu(){
         }
         children.appendChild(allRow);
         renderLevel(children,node.children,path.concat([k]));
-        // Click en la fila padre: expandir/colapsar (NO carga)
+        // Click en la fila padre: expandir/colapsar (NO carga). Cierra hermanos
+        // del mismo nivel para evitar que se traslapen submenús laterales.
         row.onclick=function(ev){
           ev.stopPropagation();
-          row.classList.toggle('expanded');
-          children.classList.toggle('expanded');
+          var willOpen=!row.classList.contains('expanded');
+          // colapsa hermanos has-children del mismo container y sus descendientes
+          Array.prototype.forEach.call(container.children,function(sib){
+            if(sib!==row&&sib!==children&&sib.classList&&sib.classList.contains('has-children')){
+              sib.classList.remove('expanded');
+            }
+          });
+          Array.prototype.forEach.call(container.children,function(sib){
+            if(sib!==children&&sib.classList&&sib.classList.contains('project-children')){
+              sib.classList.remove('expanded');
+              sib.querySelectorAll('.expanded').forEach(function(d){d.classList.remove('expanded');});
+            }
+          });
+          if(willOpen){
+            row.classList.add('expanded');
+            children.classList.add('expanded');
+            if(window.innerWidth>768){children.style.top=row.offsetTop+'px';}
+            else{children.style.top='';}
+          }else{
+            row.classList.remove('expanded');
+            children.classList.remove('expanded');
+            children.querySelectorAll('.expanded').forEach(function(d){d.classList.remove('expanded');});
+          }
         };
       }else if(loadable){
         row.onclick=function(ev){ev.stopPropagation();selectNode(node,path.concat([k]));};
@@ -745,17 +772,22 @@ function buildProjectMenu(){
 
 // Activa un nodo del catálogo y carga sus datos. Marca la opción activa en el menú.
 var currentPath=null;
+function closeProjectMenu(){
+  var menu=document.getElementById('project-menu');
+  menu.classList.remove('open');
+  menu.querySelectorAll('.expanded').forEach(function(el){el.classList.remove('expanded');});
+}
 function selectNode(node,path){
   currentPath=path;
   var srcs=collectSources(node);
   document.querySelectorAll('#project-menu .project-option').forEach(function(el){el.classList.remove('active');});
-  document.getElementById('project-menu').classList.remove('open');
+  closeProjectMenu();
   if(srcs.length===0)return;
   loadFromSources(srcs);
 }
 
-function toggleProjectMenu(e){e.stopPropagation();document.getElementById('project-menu').classList.toggle('open');}
-document.addEventListener('click',function(){document.getElementById('project-menu').classList.remove('open');});
+function toggleProjectMenu(e){e.stopPropagation();var m=document.getElementById('project-menu');if(m.classList.contains('open'))closeProjectMenu();else m.classList.add('open');}
+document.addEventListener('click',closeProjectMenu);
 
 // Arranque: construye menú y carga por default el primer proyecto del catálogo
 // que tenga al menos una URL cableada.
