@@ -555,9 +555,12 @@ var proyectoAlias={
   'inah':'Inah','vestigios arqueologicos':'Inah','vestigios arqueológicos':'Inah'
 };
 function classifyTipo(row,sourceAdapter){
-  var ente=(row['ENTE RESPONSABLE']||'').toString().trim().toUpperCase();
+  // Normaliza ENTE quitando puntos y espacios para tolerar "I.N.A.H.", "I N A H", etc.
+  var enteRaw=(row['ENTE RESPONSABLE']||'').toString().trim().toUpperCase();
+  var enteFlat=enteRaw.replace(/[.\s\-_]/g,'');
   var activo=(row['TIPO ACTIVO AFECTADO']||'').toString().trim().toUpperCase();
-  if(ente==='INAH'||activo.indexOf('ARQUEOL')!==-1)return 'Inah';
+  if(enteFlat==='INAH'||enteFlat.indexOf('INSTITUTONACIONALDEANTROPOLOG')!==-1)return 'Inah';
+  if(/ARQUEOL|VESTIGIO|MONUMENTO|PATRIMONIO/.test(activo))return 'Inah';
   if(sourceAdapter==='inah')return 'Inah'; // fallback: cualquier fila de un CSV marcado como INAH cuenta como INAH
   var p=(row['PROYECTO']||'').toString().trim().toLowerCase();
   return proyectoAlias[p]||row['PROYECTO']||'';
