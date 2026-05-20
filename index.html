@@ -554,10 +554,11 @@ var proyectoAlias={
   'servicios privados':'Servicios privados',
   'inah':'Inah','vestigios arqueologicos':'Inah','vestigios arqueológicos':'Inah'
 };
-function classifyTipo(row){
+function classifyTipo(row,sourceAdapter){
   var ente=(row['ENTE RESPONSABLE']||'').toString().trim().toUpperCase();
   var activo=(row['TIPO ACTIVO AFECTADO']||'').toString().trim().toUpperCase();
   if(ente==='INAH'||activo.indexOf('ARQUEOL')!==-1)return 'Inah';
+  if(sourceAdapter==='inah')return 'Inah'; // fallback: cualquier fila de un CSV marcado como INAH cuenta como INAH
   var p=(row['PROYECTO']||'').toString().trim().toLowerCase();
   return proyectoAlias[p]||row['PROYECTO']||'';
 }
@@ -586,7 +587,7 @@ function normPK(pk){return(pk||'').toString().replace(/\s+/g,'');}
 // obras inducidas estándar e INAH). Soporta agrupamiento de filas con ID
 // vacío como vértices adicionales (V2, V3...) que se unen como polígono
 // cerrado a la obra anterior — caso típico de los datasets INAH.
-function parseObras(rows){
+function parseObras(rows,sourceAdapter){
   var out=[],current=null;
   rows.forEach(function(row){
     var id=(row['ID OBRA INDUCIDA']||'').toString().trim();
@@ -598,7 +599,7 @@ function parseObras(rows){
     }
     if(!ll)return; // fila con ID pero sin coord parseable → la salta
     var llFin=rowToLatLon(row['COORD FIN LAT'],row['COORD FIN LONG']);
-    var tipo=classifyTipo(row);
+    var tipo=classifyTipo(row,sourceAdapter);
     current={
       id:id,
       proyecto:tipo,
@@ -645,18 +646,18 @@ function parseObras(rows){
   return out;
 }
 
-// Carga uno o varios CSVs publicados, los concatena y refresca la UI.
-function loadFromUrls(urls){
+// Carga uno o varios CSVs publicados (cada uno con su adapter), los
+// procesa con la lógica de su esquema y concatena las obras resultantes.
+function loadFromSources(sources){
   var status=document.getElementById('project-load-status');
   var label=document.getElementById('project-load-label');
   status.classList.add('visible');
-  label.textContent='Cargando '+urls.length+' fuente'+(urls.length===1?'':'s')+'…';
-  return Promise.all(urls.map(function(u){
-    return fetch(u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+' en '+u);return r.text();});
-  })).then(function(texts){
-    var allRows=[];
-    texts.forEach(function(t){parseCSV(t).forEach(function(r){allRows.push(r);});});
-    obras=parseObras(allRows);
+  label.textContent='Cargando '+sources.length+' fuente'+(sources.length===1?'':'s')+'…';
+  return Promise.all(sources.map(function(s){
+    return fetch(s.url).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+' en '+s.url);return r.text();})
+      .then(function(text){return parseObras(parseCSV(text),s.adapter);});
+  })).then(function(parsedPerSource){
+    obras=[];parsedPerSource.forEach(function(arr){arr.forEach(function(o){obras.push(o);});});
     document.getElementById('legend-items').innerHTML='';
     ['filter-proyecto','filter-ente'].forEach(function(id){
       var sel=document.getElementById(id);
@@ -673,14 +674,16 @@ function loadFromUrls(urls){
   });
 }
 
-// Recolecta recursivamente todas las URLs cargables bajo un nodo del catálogo.
-function collectUrls(node){
-  var urls=[];
-  if(node.url)urls.push(node.url);
-  if(node.children)Object.keys(node.children).forEach(function(k){urls=urls.concat(collectUrls(node.children[k]));});
-  return urls;
+// Recolecta recursivamente todas las fuentes cargables bajo un nodo del
+// catálogo. Cada fuente lleva su adapter para que parseObras pueda aplicar
+// la heurística correcta (ej. forzar tipo Inah a todas las filas de un CSV INAH).
+function collectSources(node){
+  var srcs=[];
+  if(node.url)srcs.push({url:node.url,adapter:node.adapter});
+  if(node.children)Object.keys(node.children).forEach(function(k){srcs=srcs.concat(collectSources(node.children[k]));});
+  return srcs;
 }
-function isLoadable(node){return collectUrls(node).length>0;}
+function isLoadable(node){return collectSources(node).length>0;}
 
 // Construye el menú jerárquico de "Proyectos" a partir de window.DATA_SOURCES.
 // Acordeón vertical (mismo comportamiento en desktop y móvil).
@@ -741,13 +744,11 @@ function buildProjectMenu(){
 var currentPath=null;
 function selectNode(node,path){
   currentPath=path;
-  var urls=collectUrls(node);
-  // marcar activo visualmente (limpiar todos y poner active sobre la fila clickeada)
+  var srcs=collectSources(node);
   document.querySelectorAll('#project-menu .project-option').forEach(function(el){el.classList.remove('active');});
-  // cerrar menú al elegir
   document.getElementById('project-menu').classList.remove('open');
-  if(urls.length===0)return;
-  loadFromUrls(urls);
+  if(srcs.length===0)return;
+  loadFromSources(srcs);
 }
 
 function toggleProjectMenu(e){e.stopPropagation();document.getElementById('project-menu').classList.toggle('open');}
