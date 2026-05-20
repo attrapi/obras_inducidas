@@ -387,6 +387,10 @@ function printInfo(){
 }
 function clearMap(){layers.forEach(function(l){map.removeLayer(l)});markers.forEach(function(m){map.removeLayer(m)});layers=[];markers=[]}
 
+// Convierte "13+990" → 13990 (metros). Tolera espacios y formatos sueltos.
+// Scope global porque tanto applyFilters como refreshPKRange la usan.
+function parsePK(pk){var p=(pk||'').toString().replace(/\s/g,'').split('+');return p.length===2?parseFloat(p[0])*1000+parseFloat(p[1]):parseFloat(pk)*1000;}
+
 function applyFilters(){
 clearMap();
 var fp=document.getElementById('filter-proyecto').value;
@@ -395,7 +399,6 @@ var fe=document.getElementById('filter-ente').value;
 var fc=document.getElementById('filter-criticidad').value;
 var fr=document.getElementById('filter-riesgo').value;
 var fst=document.getElementById('filter-estatus').value;
-function parsePK(pk){var p=(pk||'').toString().replace(/\s/g,'').split('+');return p.length===2?parseFloat(p[0])*1000+parseFloat(p[1]):parseFloat(pk)*1000;}
 var pkMin=Math.round(parseFloat(document.getElementById('pk-range-min').value)*1000);
 var pkMax=Math.round(parseFloat(document.getElementById('pk-range-max').value)*1000);
 var f=obras.filter(function(o){
