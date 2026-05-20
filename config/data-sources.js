@@ -30,8 +30,16 @@ window.DATA_SOURCES = {
             adapter: 'inah',
             url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQhwnRP-DRPHYKwlPe02Oh90in0PfT7I3VOailAYFVhGVXCEPvsahIypOpljdc7gg/pub?gid=1567286198&single=true&output=csv'
           },
-          'tramo-iii': { label: 'Tramo III', adapter: 'inah', url: null },
-          'tramo-iv':  { label: 'Tramo IV',  adapter: 'inah', url: null }
+          'tramo-iii': {
+            label: 'Tramo III',
+            adapter: 'inah',
+            url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRhlO7-OWXxKz4oatI5djSc9t2fHHsf1EMtPKLL-LVU5QQ9xEBODGSa-yHFyJxKQw/pub?gid=24093312&single=true&output=csv'
+          },
+          'tramo-iv': {
+            label: 'Tramo IV',
+            adapter: 'inah',
+            url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaE_bz537rfB1AmX7VB6SoW-kQxXUNg6re3JFE9yq0jjQM2hnGiWeLEqCjdIlwIg/pub?gid=1701037126&single=true&output=csv'
+          }
         }
       },
       'tramo-i':   { label: 'Tramo I',   adapter: 'estandar', url: null },
