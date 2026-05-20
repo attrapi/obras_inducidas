@@ -101,6 +101,21 @@ window.DATA_SOURCES = {
             url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTNBDAO8oOh3MNNMDXHJv498Un3Lk4r-LK6oKhdctXF8cysucZbm-TvbDdtVJVAWw/pub?gid=1117185999&single=true&output=csv'
           }
         }
+      },
+      'segmento-15b': {
+        label: 'Segmento 15B',
+        adapter: 'estandar',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHw5mPXdUn_R9GWohksMqIK90BFOb4nU7RKyVz4diF48wJRhym23h_1ryaEqLqiw/pub?gid=345548758&single=true&output=csv'
+      },
+      'segmento-16-17': {
+        label: 'Segmento 16 y 17',
+        adapter: 'estandar',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSRFZbjZQQ-Jsp51pe5s0LxcB9i8IDd1MH2z-d6LlTEvlRoC1qT79PTpSFCAVZBgw/pub?gid=1837026324&single=true&output=csv'
+      },
+      'segmento-18-19-20': {
+        label: 'Segmento 18, 19 y 20',
+        adapter: 'estandar',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT-9iXEU5DBOSJhZMv9XHMjqvmQ4o-AVEsDWTAx1QoQ4yfO6ccd8D9Cq9vOPhW9wg/pub?gid=841779046&single=true&output=csv'
       }
     }
   }
