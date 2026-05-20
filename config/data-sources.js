@@ -62,7 +62,22 @@ window.DATA_SOURCES = {
   'saltillo-monterrey': {
     label: 'Saltillo - Monterrey',
     children: {
-      // pendiente integrar: Seg 13-14 + INAH datasets 1 y 2
+      'inah': {
+        label: 'INAH',
+        children: {
+          'tramo-13-14': {
+            label: 'Tramo 13-14',
+            adapter: 'inah',
+            url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbks6OG9F4SH1Ue_9qt3-4mk2A9arGzQKEXRHFGw5lq0r3H4u8NlbfSOJIG1ZYXg/pub?gid=60031769&single=true&output=csv'
+          },
+          'tramo-15b': {
+            label: 'Tramo 15B',
+            adapter: 'inah',
+            url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSuhlYtmT4G7Z9sokHn2n1tLmB5eJvB0j4O93KrDDIpHWEi1ZqTznfmgtImfSRF6w/pub?gid=1646263905&single=true&output=csv'
+          }
+        }
+      },
+      'segmentos-13-14': { label: 'Segmentos 13 y 14', adapter: 'estandar', url: null }
     }
   },
   'monterrey-nuevo-laredo': {
