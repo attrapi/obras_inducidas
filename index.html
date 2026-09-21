@@ -22,7 +22,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .stat{text-align:center;padding:4px 10px;background:rgba(255,255,255,0.18);border-radius:8px;border:1px solid rgba(255,255,255,0.12)}
 .stat-num{color:#fff;font-size:17px;font-weight:700}
 .stat-label{color:rgba(255,255,255,0.7);font-size:9px;text-transform:uppercase;letter-spacing:0.4px}
-.legend{position:absolute;bottom:30px;left:14px;z-index:1000;background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.1);max-width:220px}
+.legend{position:absolute;bottom:30px;left:14px;z-index:1000;background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.1);max-width:220px;display:flex;flex-direction:column;max-height:calc(100vh - 120px)}
+#legend-items{overflow-y:auto;min-height:0}
 .legend h3{color:#222;font-size:13px;margin-bottom:10px;font-weight:600}
 .legend-item{display:flex;align-items:center;gap:8px;margin:5px 0;cursor:pointer;padding:3px 4px;border-radius:4px;transition:background 0.2s}
 .legend-item:hover{background:rgba(0,0,0,0.04)}
@@ -286,7 +287,7 @@ return L.divIcon({className:'',html:h,iconSize:[csz,csz],iconAnchor:[csz/2,csz/2
 
 var map=L.map('map',{zoomControl:false}).setView([20.55,-101.0],11);
 L.control.zoom({position:'bottomright'}).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'CartoDB',maxZoom:19}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19}).addTo(map);
 
 var kmlLayer=L.polyline(kmlRoute,{color:'#e53935',weight:3,opacity:0.7,lineCap:'round',lineJoin:'round'}).addTo(map);
 var kmlVisible=true;
